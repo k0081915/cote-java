@@ -1,5 +1,6 @@
 package problems.boj.p13398;
 
+// 백준(DP) 연속합2 - https://www.acmicpc.net/problem/13398
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
