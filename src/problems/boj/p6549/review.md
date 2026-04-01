@@ -21,91 +21,104 @@
 ```java
 package problems.boj.p6549;
 
-// 백준 6549 - https://www.acmicpc.net/problem/6549
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 class Main {
     public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        FastScanner fs = new FastScanner(System.in);
         StringBuilder sb = new StringBuilder();
 
-        while(true) {
-            String line = br.readLine();
-
-            // 입력이 끝나면 종료
-            if(line == null) {
-                break;
-            }
-
-            StringTokenizer st = new StringTokenizer(line);
-            int n = Integer.parseInt(st.nextToken());
-
-            // n이 0이면 전체 입력 종료
-            if(n == 0) {
+        while (true) {
+            int n = fs.nextInt();
+            if (n == 0) {
                 break;
             }
 
             long[] heights = new long[n];
-            int idx = 0;
-
-            // 한 줄에 히스토그램 높이가 다 안들어올 수도 있으므로
-            // n개를 모두 읽을 때까지 계속 토큰을 채움
-            while(idx < n) {
-                if(!st.hasMoreTokens()) {
-                    st = new StringTokenizer(br.readLine());
-                }
-                heights[idx++] = Long.parseLong(st.nextToken());
+            for (int i = 0; i < n; i++) {
+                heights[i] = fs.nextLong();
             }
 
-            sb.append(getMaxArea(heights)).append('\n');
+            sb.append(getMaxArea(heights, n)).append('\n');
         }
 
         System.out.println(sb);
     }
 
-    static long getMaxArea(long[] heights) {
-        int n = heights.length;
-        // 스택에는 인덱스를 저장
+    static long getMaxArea(long[] heights, int n) {
         Deque<Integer> stack = new ArrayDeque<>();
         long maxArea = 0L;
 
-        // 왼쪽부터 막대를 하나씩 확인
-        for(int i = 0; i <= n; i++) {
-            // i == n 일때 높이 0인 막대를 하나 본다고 가정해서
-            // 스택에 남아있는 모든 막대를 한 번에 정리한다
-            long currentHeight = (i == n) ? 0 : heights[i];
-
-            // 현재 막대가 스택 top 막대보다 낮아지는 순간
-            // top 막대를 높이로 하는 최대 직사각형 넓이를 계산할 수 있다
-            while(!stack.isEmpty() && heights[stack.peek()] > currentHeight) {
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && heights[stack.peek()] > heights[i]) {
                 long height = heights[stack.pop()];
-
-                // 스택이 비어있으면
-                // 현재 막대 i 이전까지 전부 확장 가능 -> 너비 = i
-                // 비어있지 않으면
-                // stack.peek() 다음부터 i-1까지 확장 가능
                 int leftBoundary = stack.isEmpty() ? -1 : stack.peek();
-
-                int width = i - leftBoundary - 1;
-
+                long width = i - leftBoundary - 1L;
                 maxArea = Math.max(maxArea, height * width);
             }
-
-            // 현재 막대 인덱스를 스택에 넣는다
             stack.push(i);
+        }
+
+        while (!stack.isEmpty()) {
+            long height = heights[stack.pop()];
+            int leftBoundary = stack.isEmpty() ? -1 : stack.peek();
+            long width = n - leftBoundary - 1L;
+            maxArea = Math.max(maxArea, height * width);
         }
 
         return maxArea;
     }
+
+    static class FastScanner {
+        private final InputStream in;
+        private final byte[] buffer = new byte[1 << 16];
+        private int ptr = 0;
+        private int len = 0;
+
+        FastScanner(InputStream in) {
+            this.in = in;
+        }
+
+        private int read() throws IOException {
+            if (ptr >= len) {
+                len = in.read(buffer);
+                ptr = 0;
+                if (len <= 0) {
+                    return -1;
+                }
+            }
+            return buffer[ptr++];
+        }
+
+        long nextLong() throws IOException {
+            int c;
+            do {
+                c = read();
+            } while (c <= ' ' && c != -1);
+
+            long value = 0;
+            while (c > ' ') {
+                value = value * 10 + (c - '0');
+                c = read();
+            }
+            return value;
+        }
+
+        int nextInt() throws IOException {
+            return (int) nextLong();
+        }
+    }
 }
 ```
 
-## 4) 내가 실수한 부분
-- 넓이를 계산할 때 너비를 `i - stack.peek()`처럼 잡으면 오프바이원 오류가 나기 쉽다. 반드시 `i - leftBoundary - 1`로 계산해야 한다.
-- 스택에 높이값만 저장하면 너비 계산이 어려워지므로 인덱스를 저장하는 편이 안전하다.
-- 마지막 정리 루프를 따로 두지 않으면 오름차순으로 끝나는 입력에서 최댓값을 놓치기 쉽다.
-- 이 문제는 정답 범위가 커서 `int`로 넓이를 계산하면 오버플로우 위험이 있다. `long` 사용이 필요하다.
+## 4) 내 코드와 다른 부분
+- 입력이 큰 편이라 `BufferedReader + StringTokenizer`보다 바이트 기반 스캐너가 더 안정적으로 빠르다.
+- 센티널 인덱스를 스택에 넣는 방식 대신, 메인 루프와 마무리 정리 루프를 분리하면 흐름이 더 명확하다.
+- 너비는 `int`로도 계산 가능하지만, 넓이 계산과 일관성을 위해 `long`으로 맞추는 편이 안전하다.
+- 정답 코드는 "통과하는 코드"보다 "큰 입력에서도 해석과 성능이 모두 안정적인 코드" 쪽으로 다듬었다.
 
 ## 5) 문제 해결 노하우
 - "현재 값이 더 작아지는 순간 무엇을 확정할 수 있는가"를 기준으로 스택 문제를 보면 구현이 쉬워진다.

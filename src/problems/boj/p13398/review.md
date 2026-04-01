@@ -24,45 +24,38 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class Main {
+class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
         int n = Integer.parseInt(br.readLine());
-        int[] arr = new int[n];
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
-
-        int noRemove = arr[0];
-        int remove = arr[0];
-        int max = arr[0];
+        int first = Integer.parseInt(st.nextToken());
+        int keep = first;
+        int drop = first;
+        int answer = first;
 
         for (int i = 1; i < n; i++) {
-            int cur = arr[i];
+            int cur = Integer.parseInt(st.nextToken());
 
-            int nextRemove = Math.max(noRemove, remove + cur);
-            int nextNoRemove = Math.max(noRemove + cur, cur);
+            int nextDrop = Math.max(keep, drop + cur);
+            int nextKeep = Math.max(keep + cur, cur);
 
-            remove = nextRemove;
-            noRemove = nextNoRemove;
-
-            max = Math.max(max, Math.max(remove, noRemove));
+            keep = nextKeep;
+            drop = nextDrop;
+            answer = Math.max(answer, Math.max(keep, drop));
         }
 
-        System.out.println(max);
+        System.out.println(answer);
     }
 }
 ```
 
-## 4) 내가 실수한 부분
-- 상태 갱신 순서를 바꾸면 오답 가능성이 큼.
-- 특히 `nextRemove`는 "이전 noRemove"가 필요하므로 먼저 계산해야 안전함.
-- `n=1` 같은 최소 입력에서 초기값(`arr[0]`) 처리 누락 시 바로 틀리기 쉬움.
+## 4) 내 코드와 다른 부분
+- 배열 전체를 저장하지 않고, 입력을 읽으면서 상태 2개만 굴려도 충분하다.
+- 변수 이름을 `keep`, `drop`처럼 상태 의미가 드러나게 두면 점화식 해석이 더 빨라진다.
+- 핵심 차이는 "공간 최적화"보다 "상태 의미가 바로 읽히는 구현"에 있다.
 
 ## 5) 문제 해결 노하우
 - "원소 1개 제거 가능" 유형은 보통 상태를 2개로 쪼개면 깔끔해짐.
