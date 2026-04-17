@@ -6,14 +6,14 @@
 아래처럼 짧게 말하면 됩니다.
 
 - `BOJ 13398 검토해줘`
-- `lv2_example 검토해줘`
+- `Programmers 42626 검토해줘`
 - `BOJ 13398 문서화해줘`
 
 ## Codex가 수행할 작업
 요청을 받으면 다음 순서로 진행합니다.
 
 1. 문제 패키지 위치 탐색  
-   - 예: `src/problems/boj/p13398/Main.java`, `src/problems/programmers/lv2_example/Solution.java`
+   - 예: `src/problems/boj/p13398/Main.java`, `src/problems/programmers/p42626/Solution.java`
 2. 제출 코드 확인 및 로직 검토
 3. (가능하면) 컴파일/실행으로 기본 동작 점검
 4. 해당 패키지에 리뷰 문서 생성
@@ -34,10 +34,15 @@
 5. 문제 해결 노하우
 
 ## 정확도 체크를 위해 필요한 것
-- 코드가 `Main.java` 기준으로 컴파일 가능해야 합니다.
+- 코드가 플랫폼 규칙에 맞는 진입 파일 기준으로 컴파일 가능해야 합니다.
+  - BOJ: `Main.java`
+  - Programmers / SWEA: `Solution.java`
 - 입력 예시가 있으면 함께 주면 검토 품질이 더 좋아집니다.
   - 예: `입력예시는 1 2 3 ...`
 
 ## 참고
-- 패키지 규칙은 `src/problems/<platform>/<problemId>/Main.java` 기준으로 해석합니다.
-- `<platform>` 매핑: `BOJ -> boj`, `Programmers -> programmers`
+- 패키지 규칙:
+  - BOJ: `src/problems/boj/p문제번호/Main.java`
+  - Programmers: `src/problems/programmers/p문제번호/Solution.java`
+  - SWEA: `src/problems/swea/p문제번호/Solution.java`
+- `<platform>` 매핑: `BOJ -> boj`, `Programmers -> programmers`, `SWEA -> swea`
