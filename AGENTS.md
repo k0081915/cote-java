@@ -39,6 +39,20 @@ Automated test framework is not set up yet. Validate using sample/custom input c
 - Re-run after each logic change and verify expected stdout exactly.
 - Add edge-case checks (N=1, min/max values, overflow-sensitive cases).
 
+## Review Documentation Guidelines
+When creating or updating a problem `review.md`:
+
+- Keep the fixed 5-section structure:
+  - 문제 유형
+  - 문제 접근 방법
+  - 정답 코드
+  - 내 코드와 다른 부분
+  - 문제 해결 노하우
+- In `정답 코드`, write Codex's recommended solution, not a copy of the submitted code.
+- Include helpful comments inside the recommended code so the key algorithm steps are easy to follow.
+- Comments should explain meaningful logic such as state definitions, transition rules, boundary handling, and pruning conditions.
+- Avoid noisy comments that merely restate obvious assignments.
+
 ## Commit & Pull Request Guidelines
 Current history has a single initial commit (`init`), so conventions are not yet strict.
 
